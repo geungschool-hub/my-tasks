@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Tasks</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- 사이드바 -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <span class="logo">✅</span>
+      <h1 class="app-title">My Tasks</h1>
+    </div>
+
+    <nav class="filter-nav">
+      <p class="nav-label">보기</p>
+      <button class="filter-btn active" data-filter="전체">
+        <span class="nav-icon">📋</span> 전체
+        <span id="badge-전체" class="nav-badge"></span>
+      </button>
+      <button class="filter-btn" data-filter="업무">
+        <span class="nav-icon">🔵</span> 업무
+        <span id="badge-업무" class="nav-badge"></span>
+      </button>
+      <button class="filter-btn" data-filter="개인">
+        <span class="nav-icon">🟢</span> 개인
+        <span id="badge-개인" class="nav-badge"></span>
+      </button>
+      <button class="filter-btn" data-filter="공부">
+        <span class="nav-icon">🟣</span> 공부
+        <span id="badge-공부" class="nav-badge"></span>
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button id="theme-toggle" class="theme-toggle" title="Alt+D">
+        <span class="theme-icon">🌙</span>
+        <span class="theme-label">다크 모드</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 메인 -->
+  <main class="main">
+
+    <!-- 탑바 -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <h2 id="view-title" class="view-title">전체</h2>
+        <span id="task-count" class="task-count"></span>
+      </div>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="search-input" class="search-input" placeholder="검색... (Ctrl+K)" />
+        </div>
+        <button id="clear-completed-btn" class="clear-btn" disabled>완료 항목 삭제</button>
+      </div>
+    </header>
+
+    <!-- 입력 영역 -->
+    <div class="input-area">
+      <input
+        type="text"
+        id="todo-input"
+        class="todo-input"
+        placeholder="새 할 일을 입력하세요... (Alt+N)"
+        maxlength="100"
+      />
+      <select id="category-select" class="category-select">
+        <option value="업무">업무</option>
+        <option value="개인">개인</option>
+        <option value="공부">공부</option>
+      </select>
+      <button id="add-btn" class="add-btn">+ 추가</button>
+    </div>
+
+    <!-- 진행률 바 -->
+    <div class="progress-wrap">
+      <div class="progress-bar-bg">
+        <div id="progress-bar" class="progress-bar-fill"></div>
+      </div>
+      <span id="progress-text" class="progress-text">0 / 0</span>
+    </div>
+
+    <!-- 목록 -->
+    <div class="list-container">
+      <ul id="todo-list" class="todo-list"></ul>
+      <div id="empty-msg" class="empty-msg hidden">
+        <span class="empty-icon">📝</span>
+        <p>할 일이 없습니다. 추가해보세요!</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

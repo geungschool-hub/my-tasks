@@ -17,7 +17,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db  = getFirestore(app);
-const TODOS_REF = doc(db, "todos", "shared"); // 모든 기기가 같은 문서 공유
+const TODOS_REF = doc(db, "todos", "shared"); // 모바일 버전과 같은 문서 공유
 
 // ===========================
 // 데이터 저장 (Firestore)
@@ -49,7 +49,10 @@ function loadTheme() {
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
-  themeToggle.querySelector('.theme-icon').textContent = theme === 'dark' ? '☀️' : '🌙';
+  const icon  = themeToggle.querySelector('.theme-icon');
+  const label = themeToggle.querySelector('.theme-label');
+  icon.textContent  = theme === 'dark' ? '☀️' : '🌙';
+  label.textContent = theme === 'dark' ? '라이트 모드' : '다크 모드';
 }
 
 function toggleTheme() {
@@ -98,6 +101,10 @@ const list              = document.getElementById('todo-list');
 const emptyMsg          = document.getElementById('empty-msg');
 const filterBtns        = document.querySelectorAll('.filter-btn');
 const clearCompletedBtn = document.getElementById('clear-completed-btn');
+const viewTitle         = document.getElementById('view-title');
+const taskCount         = document.getElementById('task-count');
+const progressBar       = document.getElementById('progress-bar');
+const progressText      = document.getElementById('progress-text');
 
 // ===========================
 // 렌더링
@@ -158,6 +165,25 @@ function createItem(todo, query) {
   return li;
 }
 
+function updateBadges() {
+  ['전체', '업무', '개인', '공부'].forEach((cat) => {
+    const el = document.getElementById(`badge-${cat}`);
+    if (!el) return;
+    const count = cat === '전체'
+      ? todos.filter((t) => !t.completed).length
+      : todos.filter((t) => t.category === cat && !t.completed).length;
+    el.textContent = count > 0 ? count : '';
+  });
+}
+
+function updateProgress() {
+  const total     = todos.length;
+  const completed = todos.filter((t) => t.completed).length;
+  const pct       = total === 0 ? 0 : Math.round((completed / total) * 100);
+  progressBar.style.width = `${pct}%`;
+  progressText.textContent = `${completed} / ${total}`;
+}
+
 function render() {
   list.innerHTML = '';
 
@@ -177,7 +203,11 @@ function render() {
   }
 
   emptyMsg.classList.toggle('hidden', total > 0);
+  taskCount.textContent = total > 0 ? `${active.length}개 남음` : '';
   clearCompletedBtn.disabled = !todos.some((t) => t.completed);
+
+  updateBadges();
+  updateProgress();
 }
 
 // ===========================
@@ -210,6 +240,7 @@ function clearCompleted() {
 
 function setFilter(filter) {
   activeFilter = filter;
+  viewTitle.textContent = filter;
   filterBtns.forEach((btn) => btn.classList.toggle('active', btn.dataset.filter === filter));
   render();
 }
@@ -226,6 +257,7 @@ themeToggle.addEventListener('click', toggleTheme);
 searchInput.addEventListener('input', (e) => { searchQuery = e.target.value.trim(); render(); });
 
 document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); searchInput.focus(); searchInput.select(); }
   if (e.altKey && e.key === 'n') { e.preventDefault(); input.focus(); input.select(); }
   if (e.altKey && e.key === 'd') { e.preventDefault(); toggleTheme(); }
 });
